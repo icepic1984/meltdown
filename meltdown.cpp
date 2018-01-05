@@ -45,6 +45,7 @@ static void handler(int sig, siginfo_t* si, void* unused)
     
     ++addr;
 
+    // See https://meltdownattack.com/meltdown.pdf
     asm __volatile__("mov rax, 0 \n"
                      "retry_h:  \n"
                      "mov al, BYTE PTR [%0] \n" // Trigger exception
